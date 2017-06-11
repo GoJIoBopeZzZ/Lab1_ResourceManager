@@ -13,7 +13,8 @@ public class Main {
 //        ResourceGenerator.generate(path, threads, 100, 100); // Генератор файлов
 
 //        [a-zA-Z] - регулярное выражение для поиска латиницы! " " - разделитель
-        ResourceThread test = new ResourceThread(path , frame, threads, "[a-zA-Z]", " ");
+        ResourceThread test = new ResourceThread(path , frame, threads, "[a-zA-Z]",
+                "[,;:.!?@#$%^&*():;\\s]+");
         test.start();
     }
 }
