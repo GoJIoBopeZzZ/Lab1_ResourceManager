@@ -13,7 +13,7 @@ public class ResourceGenerator {
 
 //    Метод генерации файлов с именами 0 - filesNumber.txt
     static void generate(String path, int filesNumber, int linesNumber, int numbers) {
-        for (int i = 0; i < filesNumber; i++)
+        for (int i = 1; i < filesNumber; i++)
             try {
                 FileOutputStream out = new FileOutputStream(path + i + ".txt");
                 pathList.add(path + i + ".txt");

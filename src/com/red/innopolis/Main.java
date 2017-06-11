@@ -8,7 +8,7 @@ public class Main {
         String path = "/Users/_red_/IdeaProjects/ResourceGenerator/src/Resources/";
 
         OrderForm frame = new OrderForm("Order Form");
-        Integer threads = 10;
+        Integer threads = 5;
 
 //        ResourceGenerator.generate(path, threads, 100, 100); // Генератор файлов
 
