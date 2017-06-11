@@ -11,11 +11,11 @@ import java.util.Random;
 public class ResourceGenerator {
     private static List<String> pathList = new ArrayList<>();
 
-    public static void generate(int filesCount, int numberCount, int lineCount) {
+    public static void generate(String path, int filesCount, int numberCount, int lineCount) {
         for (int i = 0; i < filesCount; i++) {
             try {
-                FileOutputStream out = new FileOutputStream(i + ".txt");
-                pathList.add(i + ".txt");
+                FileOutputStream out = new FileOutputStream(path + i + ".txt");
+                pathList.add(path + i + ".txt");
                 out.flush();
 
                 for (int j = 0; j < lineCount; j++) {
