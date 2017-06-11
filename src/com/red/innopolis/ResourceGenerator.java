@@ -11,17 +11,18 @@ import java.util.Random;
 public class ResourceGenerator {
     private static List<String> pathList = new ArrayList<>();
 
-    public static void generate(String path, int filesCount, int numberCount, int lineCount) {
-        for (int i = 0; i < filesCount; i++) {
+    static void generate(String path, int filesNumber, int linesNumber, int numbers) {
+        for (int i = 0; i < filesNumber; i++)
             try {
                 FileOutputStream out = new FileOutputStream(path + i + ".txt");
                 pathList.add(path + i + ".txt");
                 out.flush();
 
-                for (int j = 0; j < lineCount; j++) {
-                    StringBuffer str = new StringBuffer();
-                    for (int k = 0; k < numberCount; k++)
-                        str.append((new Integer(new Random().nextInt(100))).toString() + " ");
+                for (int j = 0; j < linesNumber; j++) {
+                    StringBuilder str = new StringBuilder();
+                    
+                    for (int k = 0; k < numbers; k++)
+                        str.append((new Integer(new Random().nextInt(100))).toString()).append(" ");
 
                     str.append("\n");
                     out.write(str.toString().getBytes());
@@ -31,7 +32,6 @@ public class ResourceGenerator {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
     }
 
     public List<String> getPathList() {
