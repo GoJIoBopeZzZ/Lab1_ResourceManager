@@ -1,11 +1,10 @@
 package com.red.innopolis;
 
+import GUI.OrderForm;
+
 import java.io.*;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,17 +12,20 @@ import java.util.regex.Pattern;
  * Created by _red_ on 11.06.17.
  */
 public class ResourceThread extends Thread{
+    private static volatile boolean stopALL = false;
+    private OrderForm frame;
     private String path;
-    private static String compiler;
-    private static String spliter;
-    private static int numbersOfThread;
-    private static Map<String , Integer> map = new ConcurrentHashMap<>();
+    private String compiler;
+    private String spliter;
+    private int numbersOfThread;
+    private volatile Map<String , Integer> map = new ConcurrentHashMap<>();
 
-    ResourceThread(String path, int numbersOfThread, String compiler, String spliter) {
+    ResourceThread(String path, OrderForm frame, int numbersOfThread, String compiler, String spliter) {
         this.path = path;
-        ResourceThread.compiler = compiler;
-        ResourceThread.spliter = spliter;
-        ResourceThread.numbersOfThread = numbersOfThread;
+        this.compiler = compiler;
+        this.spliter = spliter;
+        this.numbersOfThread = numbersOfThread;
+        this.frame = frame;
     }
 
     @Override
@@ -41,7 +43,7 @@ public class ResourceThread extends Thread{
         }
     }
 
-    private static void processDirectory(File directory) {
+    private void processDirectory(File directory) {
         // Получаем список доступных файлов в указанной директории.
         File[] files = directory.listFiles();
         if (files == null) {
@@ -52,7 +54,7 @@ public class ResourceThread extends Thread{
         }
 
         // Непосредственно многопоточная обработка файлов.
-        ExecutorService service = Executors.newFixedThreadPool(numbersOfThread);
+        ExecutorService service = Executors.newFixedThreadPool(this.numbersOfThread);
         for (final File f : files) {
             if (!f.isFile()) {
                 continue;
@@ -62,51 +64,64 @@ public class ResourceThread extends Thread{
                 try {
                     BufferedReader reader = new BufferedReader(new FileReader(f));
 //                        int lines = 0;
+
                     String str = reader.readLine();
-
                     while (str != null) {
-                        Pattern p = Pattern.compile(compiler);
-                        Matcher m = p.matcher(str);
-                        if(m.find()) return;
+                        Pattern p = Pattern.compile(this.compiler);
+                        Matcher m = p.matcher(str.toString());
 
-                        String[] parts = str.split(spliter);
+                        if (m.find()) {
+                            System.out.println("Нашлась латиница!");
+                            stopALL = true;
 
-                        for (String part : parts) {
-                            if (!map.containsKey(part)) map.put(part, 1);
-                            else map.put(part, map.get(part) + 1);
                         }
 
-//                            ++lines;
-                        str = reader.readLine();
-                    }
-//                        System.out.println("Поток: " + Thread.currentThread().getName().substring(7,15) +
-//                                ". Файл: " + f.getName() + ". Количество строк: " + lines);
+                        if (stopALL) break;
+                        else {
+                            String[] parts = str.split(spliter);
 
+                            for (String part : parts) {
+
+                                if (!map.containsKey(part)) {
+                                    map.put(part, 1);
+                                } else map.put(part, map.get(part) + 1);
+
+                                this.frame.setTextArea(map);
+
+                            }
+                            str = reader.readLine();
+                            Thread.sleep(500);
+                        }
+                    }
                 } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             });
         }
-        // Новые задачи более не принимаем, выполняем только оставшиеся.
-        service.shutdown();
-        // Ждем завершения выполнения потоков не более 10 секунд.
-        try {
-            service.awaitTermination(0, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        // Новые задачи более не принимаем, и завершаем оставшиеся.
+        if(!service.isShutdown()) {
+            service.shutdown();
+            // Ждем завершения
+            try {
+                service.awaitTermination(60, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         printOrder();
     }
 
-    private static void printOrder() {
+    private synchronized void printOrder() {
         String leftAlignFormat = "| %-10s | %-9d |%n";
 
         System.out.format("+------------+-----------+%n");
         System.out.format("|   Words    |  Entries  |%n");
         System.out.format("+------------+-----------+%n");
-        for (Map.Entry<String , Integer> entry : map.entrySet()) {
-            System.out.format(leftAlignFormat,"    " + entry.getKey(), entry.getValue());
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            System.out.format(leftAlignFormat, "    " + entry.getKey(), entry.getValue());
             System.out.format("+------------+-----------+%n");
         }
     }

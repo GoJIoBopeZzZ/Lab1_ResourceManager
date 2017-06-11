@@ -1,15 +1,15 @@
 package com.red.innopolis;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import GUI.OrderForm;
 
 public class Main {
 
     public static void main(String[] args) {
         String path = "/Users/_red_/IdeaProjects/ResourceGenerator/src/Resources/";
-
-//        ResourceGenerator.generate(path, 10, 10, 10);
-        ResourceThread test = new ResourceThread(path , 5, "[a-zA-Z]", " ");
+        OrderForm frame = new OrderForm("Order Form");
+        Integer threads = 2;
+//        ResourceGenerator.generate(path, threads, 20, 20);
+        ResourceThread test = new ResourceThread(path , frame, threads, "[a-zA-Z]", " ");
         test.start();
     }
 }

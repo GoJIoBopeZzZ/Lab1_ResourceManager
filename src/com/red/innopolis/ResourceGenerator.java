@@ -20,9 +20,9 @@ public class ResourceGenerator {
 
                 for (int j = 0; j < linesNumber; j++) {
                     StringBuilder str = new StringBuilder();
-                    
+
                     for (int k = 0; k < numbers; k++)
-                        str.append((new Integer(new Random().nextInt(100))).toString()).append(" ");
+                        str.append((new Integer(new Random().nextInt(10))).toString()).append(" ");
 
                     str.append("\n");
                     out.write(str.toString().getBytes());
