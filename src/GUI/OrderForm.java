@@ -8,7 +8,7 @@ import java.util.Map;
  * Created by _red_ on 11.06.17.
  */
 public class OrderForm extends JFrame {
-    public final JTextArea textArea;
+    private final JTextArea textArea;
 
     public OrderForm(String title) {
         JFrame frame = new JFrame(title);
@@ -36,12 +36,12 @@ public class OrderForm extends JFrame {
     public synchronized void setTextArea(Map<String, Integer> map) {
         this.textArea.setText(null);
         StringBuilder str = new StringBuilder();
-        synchronized (map) {
-            for (Map.Entry<String, Integer> entry : map.entrySet()) {
-                str.append("Word - ").append(entry.getKey()).append(" | Entries - ").
-                        append(entry.getValue().toString()).append("\n");
-            }
+
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            str.append("Word - ").append(entry.getKey()).append(" | Entries - ").
+                    append(entry.getValue().toString()).append("\n");
         }
+
         this.textArea.append(str.toString());
     }
 }

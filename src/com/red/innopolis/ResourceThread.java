@@ -71,7 +71,7 @@ public class ResourceThread extends Thread{
 
 //                        Используем паттерн для регулярного выражения
                         Pattern p = Pattern.compile(this.compiler);
-                        Matcher m = p.matcher(str.toString());
+                        Matcher m = p.matcher(str);
 
                         if (m.find()) {
                             System.out.println("Нашлась латиница!");
