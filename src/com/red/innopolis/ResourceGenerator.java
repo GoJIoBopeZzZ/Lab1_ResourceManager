@@ -1,16 +1,21 @@
 package com.red.innopolis;
 
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
  * Created by _red_ on 11.06.17.
  */
 public class ResourceGenerator {
+    private static List<String> pathList = new ArrayList<>();
+
     public static void generate(int filesCount, int numberCount, int lineCount) {
         for (int i = 0; i < filesCount; i++) {
             try {
                 FileOutputStream out = new FileOutputStream(i + ".txt");
+                pathList.add(i + ".txt");
                 out.flush();
 
                 for (int j = 0; j < lineCount; j++) {
@@ -27,5 +32,9 @@ public class ResourceGenerator {
                 e.printStackTrace();
             }
         }
+    }
+
+    public List<String> getPathList() {
+        return pathList;
     }
 }
