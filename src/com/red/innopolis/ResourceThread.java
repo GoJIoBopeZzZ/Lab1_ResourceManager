@@ -1,7 +1,6 @@
 package com.red.innopolis;
 
 import GUI.OrderForm;
-
 import java.io.*;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -63,8 +62,6 @@ public class ResourceThread extends Thread{
             service.execute(() -> {
                 try {
                     BufferedReader reader = new BufferedReader(new FileReader(f));
-//                        int lines = 0;
-
                     String str = reader.readLine();
                     while (str != null) {
                         Pattern p = Pattern.compile(this.compiler);
@@ -116,7 +113,6 @@ public class ResourceThread extends Thread{
 
     private synchronized void printOrder() {
         String leftAlignFormat = "| %-10s | %-9d |%n";
-
         System.out.format("+------------+-----------+%n");
         System.out.format("|   Words    |  Entries  |%n");
         System.out.format("+------------+-----------+%n");
