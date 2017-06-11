@@ -11,6 +11,7 @@ import java.util.Random;
 public class ResourceGenerator {
     private static List<String> pathList = new ArrayList<>();
 
+//    Метод генерации файлов с именами 0 - filesNumber.txt
     static void generate(String path, int filesNumber, int linesNumber, int numbers) {
         for (int i = 0; i < filesNumber; i++)
             try {
@@ -22,6 +23,7 @@ public class ResourceGenerator {
                     StringBuilder str = new StringBuilder();
 
                     for (int k = 0; k < numbers; k++)
+//                        Генерируем число в диапазоне 0-9
                         str.append((new Integer(new Random().nextInt(10))).toString()).append(" ");
 
                     str.append("\n");

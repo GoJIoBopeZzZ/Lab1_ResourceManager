@@ -14,9 +14,9 @@ public class ResourceThread extends Thread{
     private static volatile boolean stopALL = false;
     private OrderForm frame;
     private String path;
-    private String compiler;
-    private String spliter;
-    private int numbersOfThread;
+    private String compiler; // Регулярное выражение для поиска в строке
+    private String spliter; // Разделитель слов
+    private int numbersOfThread; // Кол-во потоков
     private volatile Map<String , Integer> map = new ConcurrentHashMap<>();
 
     ResourceThread(String path, OrderForm frame, int numbersOfThread, String compiler, String spliter) {
@@ -52,28 +52,33 @@ public class ResourceThread extends Thread{
             System.out.println("Количество файлов для обработки: " + files.length);
         }
 
-        // Непосредственно многопоточная обработка файлов.
+//      Непосредственно многопоточная обработка файлов. Создаем наш экзекутор
         ExecutorService service = Executors.newFixedThreadPool(this.numbersOfThread);
+
+//      Проверем валидность файлов
         for (final File f : files) {
             if (!f.isFile()) {
                 continue;
             }
 
+//          Собственно наш пулл
             service.execute(() -> {
                 try {
                     BufferedReader reader = new BufferedReader(new FileReader(f));
-                    String str = reader.readLine();
+                    String str = reader.readLine(); // Построчно читаем файл f
+
                     while (str != null) {
+
+//                        Используем паттерн для регулярного выражения
                         Pattern p = Pattern.compile(this.compiler);
                         Matcher m = p.matcher(str.toString());
 
                         if (m.find()) {
                             System.out.println("Нашлась латиница!");
                             stopALL = true;
-
                         }
 
-                        if (stopALL) break;
+                        if (stopALL) break; // Для остановки остальных потоков
                         else {
                             String[] parts = str.split(spliter);
 
@@ -91,9 +96,11 @@ public class ResourceThread extends Thread{
                         }
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("Ошибка чтения из файла!");
+//                    e.printStackTrace();
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    System.out.println("All threads are Interrupted!");
+//                    e.printStackTrace();
                 }
             });
         }
@@ -104,15 +111,17 @@ public class ResourceThread extends Thread{
             try {
                 service.awaitTermination(60, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
+                System.out.println("All threads are Interrupted!");
             }
         }
 
-        printOrder();
+        printOrder(); // Печатаем всю мапу в консоль
     }
 
+//    Метод для вывода мапы на консоль
     private synchronized void printOrder() {
-        String leftAlignFormat = "| %-10s | %-9d |%n";
+        String leftAlignFormat = "| %-10s | %-9d |%n"; // Строка форматированного вывода
         System.out.format("+------------+-----------+%n");
         System.out.format("|   Words    |  Entries  |%n");
         System.out.format("+------------+-----------+%n");

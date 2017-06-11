@@ -6,9 +6,13 @@ public class Main {
 
     public static void main(String[] args) {
         String path = "/Users/_red_/IdeaProjects/ResourceGenerator/src/Resources/";
+
         OrderForm frame = new OrderForm("Order Form");
-        Integer threads = 2;
-//        ResourceGenerator.generate(path, threads, 20, 20);
+        Integer threads = 10;
+
+//        ResourceGenerator.generate(path, threads, 100, 100); // Генератор файлов
+
+//        [a-zA-Z] - регулярное выражение для поиска латиницы! " " - разделитель
         ResourceThread test = new ResourceThread(path , frame, threads, "[a-zA-Z]", " ");
         test.start();
     }
